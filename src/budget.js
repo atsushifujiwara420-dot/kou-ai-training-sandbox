@@ -38,6 +38,10 @@ export function totalExpenses(expenses) {
   return expenses.reduce((sum, expense) => sum + normalizeAmount(expense.amount), 0);
 }
 
+export function calculateRemainingBudget(budget, spent) {
+  return normalizeAmount(budget) - normalizeAmount(spent);
+}
+
 export function summarizeByCategory(expenses) {
   return expenses.reduce((summary, expense) => {
     const category = expense.category || "Other";

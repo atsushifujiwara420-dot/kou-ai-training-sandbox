@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  calculateRemainingBudget,
   createExpense,
   filterExpenses,
   summarizeByCategory,
@@ -36,6 +37,10 @@ test("createExpense requires a title", () => {
 
 test("totalExpenses returns the sum of amounts", () => {
   assert.equal(totalExpenses(expenses), 3120);
+});
+
+test("calculateRemainingBudget returns budget minus spent amount", () => {
+  assert.equal(calculateRemainingBudget(50000, 3050), 46950);
 });
 
 test("summarizeByCategory returns category totals", () => {

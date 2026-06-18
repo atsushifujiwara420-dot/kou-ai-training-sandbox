@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import {
+  calculateRemainingBudget,
   createExpense,
   defaultCategories,
   filterExpenses,
@@ -65,14 +66,24 @@ export default function Home() {
   });
   const [categoryFilter, setCategoryFilter] = useState("All");
   const [monthFilter, setMonthFilter] = useState("2026-06");
+  const [monthlyBudget, setMonthlyBudget] = useState("50000");
   const [completedSteps, setCompletedSteps] = useState([]);
 
+  const monthlyExpenses = useMemo(
+    () => filterExpenses(expenses, { month: monthFilter }),
+    [expenses, monthFilter]
+  );
   const visibleExpenses = useMemo(
     () => filterExpenses(expenses, { category: categoryFilter, month: monthFilter }),
     [expenses, categoryFilter, monthFilter]
   );
   const categorySummary = useMemo(() => summarizeByCategory(visibleExpenses), [visibleExpenses]);
   const total = useMemo(() => totalExpenses(visibleExpenses), [visibleExpenses]);
+  const monthlyTotal = useMemo(() => totalExpenses(monthlyExpenses), [monthlyExpenses]);
+  const remainingBudget = useMemo(
+    () => calculateRemainingBudget(monthlyBudget, monthlyTotal),
+    [monthlyBudget, monthlyTotal]
+  );
 
   function updateForm(field, value) {
     setForm((current) => ({ ...current, [field]: value }));
@@ -219,8 +230,24 @@ export default function Home() {
 
           <div className="summary-panel">
             <div className="total-card">
-              <span>表示中の合計</span>
-              <strong>{total.toLocaleString()}円</strong>
+              <span>あと使える金額</span>
+              <strong>{remainingBudget.toLocaleString()}円</strong>
+            </div>
+            <div className="budget-status">
+              <label>
+                今月の予算
+                <input
+                  type="number"
+                  min="0"
+                  value={monthlyBudget}
+                  onChange={(event) => setMonthlyBudget(event.target.value)}
+                  placeholder="例: 50000"
+                />
+              </label>
+              <div>
+                <span>今月の支出合計</span>
+                <strong>{monthlyTotal.toLocaleString()}円</strong>
+              </div>
             </div>
             <div className="filters">
               <label>
@@ -243,6 +270,10 @@ export default function Home() {
                   ))}
                 </select>
               </label>
+            </div>
+            <div className="display-total">
+              <span>表示中の合計</span>
+              <strong>{total.toLocaleString()}円</strong>
             </div>
             <div className="category-summary">
               {Object.entries(categorySummary).map(([category, amount]) => (

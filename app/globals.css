@@ -254,6 +254,27 @@ h2 {
   font-size: 2rem;
 }
 
+.budget-status {
+  display: grid;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 14px;
+}
+
+.budget-status div,
+.display-total {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--muted);
+}
+
+.budget-status strong,
+.display-total strong {
+  color: var(--ink);
+}
+
 .filters {
   display: grid;
   grid-template-columns: 1fr 1fr;
